@@ -12,3 +12,6 @@ C:\Users\dao_b\Source\Repos\Tetris\Client\obj\Debug\Client.csprojResolveAssembly
 C:\Users\dao_b\Source\Repos\Tetris\Client\obj\Debug\Client.csproj.CoreCompileInputs.cache
 C:\Users\dao_b\Source\Repos\Tetris\Client\obj\Debug\Client.exe
 C:\Users\dao_b\Source\Repos\Tetris\Client\obj\Debug\Client.pdb
+C:\Users\agerm\Desktop\GitHub partage\Tetris\Client\bin\Debug\Client.exe.config
+C:\Users\agerm\Desktop\GitHub partage\Tetris\Client\obj\Debug\Client.exe
+C:\Users\agerm\Desktop\GitHub partage\Tetris\Client\obj\Debug\Client.pdb
