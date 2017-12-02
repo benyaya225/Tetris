@@ -1,0 +1,7 @@
+C:\Users\dao_b\Documents\DesignPattern\DesignPatternTetris\Client\bin\Debug\Client.exe.config
+C:\Users\dao_b\Documents\DesignPattern\DesignPatternTetris\Client\bin\Debug\Client.exe
+C:\Users\dao_b\Documents\DesignPattern\DesignPatternTetris\Client\bin\Debug\Client.pdb
+C:\Users\dao_b\Documents\DesignPattern\DesignPatternTetris\Client\obj\Debug\Client.csprojResolveAssemblyReference.cache
+C:\Users\dao_b\Documents\DesignPattern\DesignPatternTetris\Client\obj\Debug\Client.csproj.CoreCompileInputs.cache
+C:\Users\dao_b\Documents\DesignPattern\DesignPatternTetris\Client\obj\Debug\Client.exe
+C:\Users\dao_b\Documents\DesignPattern\DesignPatternTetris\Client\obj\Debug\Client.pdb
