@@ -38,7 +38,12 @@ namespace Client
         static bool[,] gameState = new bool[
             TetrisHeight, TetrisWidth];
         static int[] speedPerLevel = { 800, 700, 600, 500, 400, 300, 200, 100, 50 };
+        static bool end = false;
 
+        public bool End
+        {
+            get { return end; }
+        }
         public void LaunchGame()
         {
             Console.OutputEncoding = Encoding.GetEncoding(1252);
@@ -47,8 +52,9 @@ namespace Client
             StartNewGame();
             PrintBorders();
 
-            while (true)
+            while (end == false)
             {
+                GameOver();
                 if (Console.KeyAvailable)
                 {
                     var key = Console.ReadKey();
@@ -250,6 +256,18 @@ namespace Client
             Console.ForegroundColor = ConsoleColor.White;
             Console.SetCursorPosition(col, row);
             Console.Write(data);
+        }
+
+        static void GameOver()
+        {
+            for (int col = 0; col < TetrisWidth; col++)
+            {
+                if (gameState[0, col] == true)
+                {
+                    end = true;
+                    break;
+                }
+            }
         }
     }
 }

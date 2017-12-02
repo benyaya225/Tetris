@@ -44,7 +44,8 @@ namespace Client
                     listenerThread.Start();
                     Thread ligneRemovedThread = new Thread(SendRemovedLines);
                     ligneRemovedThread.Start();
-
+                    Thread endThread = new Thread(GameOver);
+                    endThread.Start();
                 }
                 catch (ArgumentNullException ane)
                 {
@@ -107,12 +108,28 @@ namespace Client
         {
             while (true)
             {
-                if (newGame.CheckForFullLines()  <0)
+                int linesRemoved = newGame.CheckForFullLines();
+                if (linesRemoved  >0)
                 {
-                    byte[] msg = Encoding.ASCII.GetBytes(newGame.CheckForFullLines()+" ligne(s) suprimée");
+                    
+                    byte[] msg = Encoding.UTF8.GetBytes(linesRemoved+" line(s) removed");
 
                     // Send the data through the socket.  
                     int bytesSent = sender.Send(msg);
+                }
+            }
+        }
+
+        static void GameOver()
+        {
+            bool end = false;
+            while (end == false)
+            {
+                if (newGame.End == true)
+                {
+                    Console.Clear();
+                    Console.WriteLine("Game Over");
+                    end = true;
                 }
             }
         }

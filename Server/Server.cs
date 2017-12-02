@@ -35,10 +35,13 @@ namespace Server
             listenerConnectionThread.Start();
             Thread listenerThread = new Thread(DataIn);
             listenerThread.Start();
+
+
         }
 
         static void ListenThreadConnection()
         {
+            bool gameLaunched = false;
             while (true)
             {
                 while (clients.Count != 2)
@@ -48,27 +51,41 @@ namespace Server
                     clients.Add(client);
                     Console.WriteLine(clients.Count + " clients connecté");
                 }
-
-                foreach (Socket c in clients)
+                if (gameLaunched == false)
                 {
-                    byte[] strMessage = Encoding.UTF8.GetBytes("StartGame");
-                    c.Send(strMessage);
+                    foreach (Socket client in clients)
+                    {
+                        byte[] strMessage = Encoding.UTF8.GetBytes("StartGame");
+                        client.Send(strMessage);
+                        gameLaunched = true;
+                    }
                 }
             }
         }
 
         public static void DataIn()
         {
+            Thread.Sleep(5000);
             byte[] bytes;
-            bytes = new byte[200];
-            foreach (Socket c in clients)
+            while (true)
             {
-                int bytesRec = c.Receive(bytes);
+                try
+                {
+                    bytes = new byte[200];
+                    foreach (Socket client in clients)
+                    {
+                        int bytesRec = client.Receive(bytes);
 
-                string msg = Encoding.ASCII.GetString(bytes, 0, bytesRec);
-                Console.WriteLine(msg);
+                        string msg = Encoding.ASCII.GetString(bytes, 0, bytesRec);
+                        Console.WriteLine(msg);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Unexpected exception : {0}", e.ToString());
+                }
+
             }
-
         }
 
         public static int Main(String[] args)

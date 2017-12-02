@@ -5,3 +5,10 @@ C:\Users\dao_b\Documents\DesignPattern\DesignPatternTetris\Server\obj\Debug\Serv
 C:\Users\dao_b\Documents\DesignPattern\DesignPatternTetris\Server\obj\Debug\Server.csproj.CoreCompileInputs.cache
 C:\Users\dao_b\Documents\DesignPattern\DesignPatternTetris\Server\obj\Debug\Server.exe
 C:\Users\dao_b\Documents\DesignPattern\DesignPatternTetris\Server\obj\Debug\Server.pdb
+C:\Users\dao_b\Source\Repos\Tetris\Server\bin\Debug\Server.exe.config
+C:\Users\dao_b\Source\Repos\Tetris\Server\bin\Debug\Server.exe
+C:\Users\dao_b\Source\Repos\Tetris\Server\bin\Debug\Server.pdb
+C:\Users\dao_b\Source\Repos\Tetris\Server\obj\Debug\Server.csprojResolveAssemblyReference.cache
+C:\Users\dao_b\Source\Repos\Tetris\Server\obj\Debug\Server.csproj.CoreCompileInputs.cache
+C:\Users\dao_b\Source\Repos\Tetris\Server\obj\Debug\Server.exe
+C:\Users\dao_b\Source\Repos\Tetris\Server\obj\Debug\Server.pdb
