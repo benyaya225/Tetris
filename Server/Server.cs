@@ -67,24 +67,16 @@ namespace Server
         {
             Thread.Sleep(5000);
             byte[] bytes;
-            while (true)
+            while (clients.Count >1)
             {
-                try
+                bytes = new byte[200];
+                foreach (Socket client in clients)
                 {
-                    bytes = new byte[200];
-                    foreach (Socket client in clients)
-                    {
-                        int bytesRec = client.Receive(bytes);
+                    int bytesRec = client.Receive(bytes);
 
-                        string msg = Encoding.ASCII.GetString(bytes, 0, bytesRec);
-                        Console.WriteLine(msg);
-                    }
+                    string msg = Encoding.ASCII.GetString(bytes, 0, bytesRec);
+                    Console.WriteLine(msg);
                 }
-                catch (Exception e)
-                {
-                    Console.WriteLine("Unexpected exception : {0}", e.ToString());
-                }
-
             }
         }
 
