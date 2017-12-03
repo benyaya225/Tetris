@@ -9,14 +9,16 @@ namespace Client
 {
     class Game
     {
-
+        //game parammeters
         const int TetrisWidth = 10;
         const int TetrisHeight = 16;
         const int GameWidth = TetrisWidth + 3;
         const int GameHeight = TetrisHeight + 2;
         const char BorderCharacter = '*';
-        static int Level = 7; // Max level: 9
+        int removedLines = 0;
+        static int penalty;
         #region Figures
+        //matrix of boolean for the block
         static bool[][,] Figures = new bool[2][,]
         {
         new bool[,]
@@ -37,13 +39,18 @@ namespace Client
         static Random random = new Random();
         static bool[,] gameState = new bool[
             TetrisHeight, TetrisWidth];
-        static int[] speedPerLevel = { 800, 700, 600, 500, 400, 300, 200, 100, 50 };
         static bool end = false;
+        private int serverBlock;
 
         public bool End
         {
             get { return end; }
         }
+
+        public int RemovedLines { get => removedLines; set => removedLines = value; }
+        public int Penalty { get => penalty; set => penalty = value; }
+        public int ServerBlock { get => serverBlock; set => serverBlock = value; }
+
         public void LaunchGame()
         {
             Console.OutputEncoding = Encoding.GetEncoding(1252);
@@ -55,6 +62,7 @@ namespace Client
             while (end == false)
             {
                 GameOver();
+                //set the lest and the right movement 
                 if (Console.KeyAvailable)
                 {
                     var key = Console.ReadKey();
@@ -77,8 +85,13 @@ namespace Client
                 if (CollisionDetection())
                 {
                     PlaceCurrentFigure();
-                    int removedLines = CheckForFullLines();
+                    if (CheckForFullLines() > 0)
+                    {
+                        removedLines += 1;
+                    }
+                    //Set the next figure from the number sent by the server
                     currentFigure = nextFigure;
+                    //nextFigure = Figures[serverBlock];
                     nextFigure = Figures[random.Next(0, Figures.Length)];
                     currentFigureRow = 1;
                     currentFigureCol = 4;
@@ -87,21 +100,22 @@ namespace Client
                 {
                     currentFigureRow++;
                 }
-
+                //keep printing the game field with the new position of the block
                 PrintGameField();
 
                 PrintBorders();
-
+                Console.SetCursorPosition(0, TetrisWidth+8);
+                Console.WriteLine("Lines removed : "+removedLines);
                 PrintFigure(currentFigure,
                     currentFigureRow, currentFigureCol);
-
-                Thread.Sleep(speedPerLevel[Level - 1]);
+                
+                Thread.Sleep(200);
             }
         }
         public int CheckForFullLines()
         {
             int linesRemoved = 0;
-
+            // if the a line of the board have all items on true  mean it is a filled line
             for (int row = 0; row < gameState.GetLength(0); row++)
             {
                 bool isFullLine = true;
@@ -115,7 +129,7 @@ namespace Client
                 }
 
                 if (isFullLine)
-                {
+                {//if the line is filled set it to false(erase all items) and bring down the line from above
                     for (int nextLine = row - 1; nextLine >= 0; nextLine--)
                     {
                         if (row < 0)
@@ -192,10 +206,12 @@ namespace Client
 
             return false;
         }
-
+        /// <summary>
+        /// set all filled with blank if there is no block, whith '#' otherwise
+        /// </summary>
         static void PrintGameField()
-        {
-            for (int row = 1; row <= TetrisHeight; row++)
+        { 
+            for (int row = 1; row <= TetrisHeight-penalty; row++)
             {
                 for (int col = 1; col <= TetrisWidth; col++)
                 {
@@ -211,6 +227,7 @@ namespace Client
             }
         }
 
+
         static void PrintFigure(bool[,] figure, int row, int col)
         {
             for (int x = 0; x < figure.GetLength(0); x++)
@@ -224,7 +241,9 @@ namespace Client
                 }
             }
         }
-
+        /// <summary>
+        /// The two first figures are not from the Server
+        /// </summary>
         static void StartNewGame()
         {
             currentFigure = Figures[
@@ -243,10 +262,9 @@ namespace Client
                 Print(GameHeight - 1, col, BorderCharacter);
             }
 
-            for (int row = 0; row < GameHeight; row++)
+            for (int row = 0; row < GameHeight-penalty; row++)
             {
                 Print(row, 0, BorderCharacter);
-                Print(row, TetrisWidth + 1, BorderCharacter);
                 Print(row, TetrisWidth + 1, BorderCharacter);
             }
         }
@@ -257,7 +275,9 @@ namespace Client
             Console.SetCursorPosition(col, row);
             Console.Write(data);
         }
-
+        /// <summary>
+        /// if a block touch the top of the field its game over
+        /// </summary>
         static void GameOver()
         {
             for (int col = 0; col < TetrisWidth; col++)

@@ -13,9 +13,11 @@ namespace Client
     {
         static Socket sender;
         static Game newGame = new Game();
+
         public static void Main(String[] args)
         {
             StartClient();
+
         }
 
         public static void StartClient()
@@ -40,12 +42,12 @@ namespace Client
                     
                     Console.WriteLine("Socket connected to {0}",
                         sender.RemoteEndPoint.ToString());
+                    Thread sendThread = new Thread(SendToServer);
+                    sendThread.Start();
                     Thread listenerThread = new Thread(ListenServer);
                     listenerThread.Start();
-                    Thread ligneRemovedThread = new Thread(SendRemovedLines);
-                    ligneRemovedThread.Start();
-                    Thread endThread = new Thread(GameOver);
-                    endThread.Start();
+
+
                 }
                 catch (ArgumentNullException ane)
                 {
@@ -66,30 +68,45 @@ namespace Client
                 Console.WriteLine(e.ToString());
             }
         }
-
+        /// <summary>
+        /// Listen for the incoming message from the server
+        /// </summary>
         static void ListenServer()
         {
             byte[] bytes;
-            while (true)
+            while (sender.Connected)
             {
                 try
                 {
-                    bytes = new byte[200];
+                    
+                    bytes = new byte[500];
                     int bytesRec = sender.Receive(bytes);
 
                     string msg = Encoding.ASCII.GetString(bytes, 0, bytesRec);
-                    switch(msg)
+                    switch (msg)
                     {
+                        //i the server ask to start the game
                         case "StartGame":
 
-                            Console.WriteLine("Debut dans 5 secondes");
+                            Console.WriteLine("Game begin in 5 seconds");
                             Thread.Sleep(5000);
                             Console.Clear();
                             newGame.LaunchGame();
                             break;
+                        case "You Win":
+                            Console.Clear();
+                            Console.WriteLine(msg);
+                            break;
+                            //when the server send "1" a block of one square should be displayed in the game
+                        case "1":
+                            //when he send "2" a block of four square
+                            break;
+                        case "2":
 
-                        case "EndGame":
-                            Environment.Exit(0);
+                            break;
+                            //add a penalty
+                        case "Penalty":
+                            newGame.Penalty += 1;
                             break;
                     }
 
@@ -97,39 +114,40 @@ namespace Client
                 }
                 catch (SocketException ex)
                 {
+                    Console.Clear();
                     Console.WriteLine("The server has disconnected!");
                     Console.ReadLine();
                     Environment.Exit(1);
                 }
             }
         }
-
-        static void SendRemovedLines()
-        {
-            while (true)
-            {
-                int linesRemoved = newGame.CheckForFullLines();
-                if (linesRemoved  >0)
-                {
-                    
-                    byte[] msg = Encoding.UTF8.GetBytes(linesRemoved+" line(s) removed");
-
-                    // Send the data through the socket.  
-                    int bytesSent = sender.Send(msg);
-                }
-            }
-        }
-
-        static void GameOver()
+        /// <summary>
+        /// Function to Send message to the server
+        /// </summary>
+        static void SendToServer()
         {
             bool end = false;
             while (end == false)
             {
-                if (newGame.End == true)
+                //check for removed lines
+                if (newGame.RemovedLines > 0)
                 {
+
+                    byte[] msg = Encoding.UTF8.GetBytes("line removed");
+
+                    // Send the data through the socket.  
+                    int bytesSent = sender.Send(msg);
+                }
+
+                    if (newGame.End == true)
+                {
+                    //send loose to the server in the case of a defeat
+                    end = true;
                     Console.Clear();
                     Console.WriteLine("Game Over");
-                    end = true;
+                    byte[] msgSent = Encoding.ASCII.GetBytes("Loose<EOF>");
+                    Console.ReadKey();
+                    sender.Close();
                 }
             }
         }
